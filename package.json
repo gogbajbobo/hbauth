@@ -12,5 +12,9 @@
   },
   "author": "gogbajbobo",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/gogbajbobo/hbauth#readme"
+  "homepage": "https://bitbucket.org/gogbajbobo/hbauth#readme",
+  "dependencies": {
+    "debug": "^3.1.0",
+    "express": "^4.16.2"
+  }
 }
