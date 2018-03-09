@@ -7,7 +7,7 @@ const validator = (req, res, next) => {
 
     debug('authorization token:', req.headers.authorization);
 
-    if (req.headers.authorization === 'authKey_12345') {
+    if (req.headers.authorization === 'Bearer authKey_12345') {
 
         debug('ok — 200');
         res.status(200).send();
