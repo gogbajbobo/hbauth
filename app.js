@@ -8,7 +8,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const register = require('./routes/register')();
-app.use('/', register);
+const login = require('./routes/login')();
+app.use(register);
+app.use(login);
 
 const validator = require('./routes/check');
 app.use(validator);
