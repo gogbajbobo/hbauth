@@ -23,7 +23,7 @@ const validator = (req, res, next) => {
 
 };
 
-app.use('/', validator);
+app.use(validator);
 
 const port = 8887;
 app.listen(port, () => {
