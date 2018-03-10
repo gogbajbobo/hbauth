@@ -4,10 +4,13 @@ const
     app = express(),
     bodyParser = require('body-parser');
 
-const validator = require('./routes/check');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+const register = require('./routes/register')();
+app.use('/', register);
+
+const validator = require('./routes/check');
 app.use(validator);
 
 const port = 8887;
