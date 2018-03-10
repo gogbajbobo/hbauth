@@ -1,7 +1,9 @@
 const
     debug = require('debug')('hbauth:app'),
     router = require('express').Router(),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcrypt'),
+    knex = require('../db/knex'),
+    uuidv4 = require('uuid/v4');
 
 module.exports = () => {
 
@@ -31,10 +33,18 @@ function register() {
             bcrypt.hash(password, 10, (err, hash) => {
 
                 if (!err) {
-                    res.status(200).json({login, password, hash});
-                }
 
-                res.status(500).send();
+                    knex('users').insert({login, hash, xid: uuidv4()})
+                        .then(() => {
+                            res.status(200).json({login, password, hash});
+                        })
+                        .catch(() => {
+                            res.status(500).send();
+                        });
+
+                } else {
+                    res.status(500).send();
+                }
 
             });
 
