@@ -21,7 +21,7 @@ function register() {
             const login = req.body.login || req.query.login;
             const password = req.body.password || req.query.password;
 
-            debug(login, password);
+            debug('register user with login:', login, 'and password:', password);
 
             if (!login || !password) {
 
