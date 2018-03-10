@@ -1,5 +1,5 @@
 const
-    debug = require('debug')('hbauth:app'),
+    debug = require('debug')('hbauth:register'),
     router = require('express').Router(),
     bcrypt = require('bcrypt'),
     knex = require('../db/knex'),
