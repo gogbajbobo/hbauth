@@ -2,8 +2,9 @@ const
     debug = require('debug')('hbauth:register'),
     router = require('express').Router(),
     bcrypt = require('bcrypt'),
-    knex = require('../db/knex'),
-    uuidv4 = require('uuid/v4');
+    users = require('../db/knex')('users'),
+    uuidv4 = require('uuid/v4'),
+    _ = require('lodash');
 
 module.exports = () => {
 
@@ -21,32 +22,46 @@ function register() {
             const login = req.body.login || req.query.login;
             const password = req.body.password || req.query.password;
 
-            debug('register user with login:', login, 'and password:', password);
+            debug('trying to register user with login:', login, 'and password:', password);
 
             if (!login || !password) {
-
-                res.status(400).send();
-                return;
-
+                return res.status(400).send();
             }
 
-            bcrypt.hash(password, 10, (err, hash) => {
+            users.select('login')
+                .then(result => {
 
-                if (!err) {
+                    const logins = _.flatMap(result, obj => _.values(obj));
 
-                    knex('users').insert({login, hash, xid: uuidv4()})
-                        .then(() => {
-                            res.status(200).json({login, password, hash});
-                        })
-                        .catch(() => {
+                    if (_.includes(logins, login)) {
+                        return res.status(400).json({error: true, message: 'login already taken'});
+                    }
+
+                    bcrypt.hash(password, 10, (err, hash) => {
+
+                        if (!err) {
+
+                            users.insert({login, hash, xid: uuidv4()})
+                                .then(result => {
+
+                                    if (result) {
+                                        res.status(200).json({login, password, hash});
+                                    } else {
+                                        res.status(500).send();
+                                    }
+
+                                })
+                                .catch(() => {
+                                    res.status(500).send();
+                                });
+
+                        } else {
                             res.status(500).send();
-                        });
+                        }
 
-                } else {
-                    res.status(500).send();
-                }
+                    });
 
-            });
+                });
 
         })
 
