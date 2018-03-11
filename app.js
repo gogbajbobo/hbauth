@@ -3,6 +3,7 @@ const
     express = require('express'),
     app = express(),
     router = express.Router(),
+    knex = require('./db/knex'),
     bodyParser = require('body-parser'),
     oauthserver = require('oauth2-server');
 
@@ -17,8 +18,8 @@ app.use(bodyParser.json());
 
 // app.use(app.oauth.errorHandler());
 
-const register = require('./routes/register')(router, app);
-const login = require('./routes/login')(router, app);
+const register = require('./routes/register')(router, app, knex);
+const login = require('./routes/login')(router, app, knex);
 app.use(register);
 app.use(login);
 
