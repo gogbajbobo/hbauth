@@ -48,6 +48,9 @@ function login(router, app, knex) {
 
                     });
 
+                })
+                .catch(() => {
+                    res.status(500).send();
                 });
 
         })
