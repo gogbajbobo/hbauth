@@ -5,21 +5,20 @@ const
     router = express.Router(),
     knex = require('./db/config/knex'),
     bodyParser = require('body-parser'),
-    oAuthServer = require('oauth2-server'),
+    OAuthServer = require('express-oauth-server'),
     accessTokensHelper = require('./db/accessTokensHelper')(knex),
     usersHelper = require('./db/usersHelper')(knex),
     oAuthModel = require('./db/models/oAuthModel')(accessTokensHelper, usersHelper);
 
+app.oauth = new OAuthServer({
+    model: oAuthModel,
+    grants: ['password']
+});
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.oauth = new oAuthServer({
-    model: oAuthModel,
-    grants: ['password'],
-    debug: true
-});
-
-// app.use(app.oauth.errorHandler());
+app.use(app.oauth.authorize());
 
 const register = require('./routes/register')(router, app, knex);
 const login = require('./routes/login')(router, app, knex);
