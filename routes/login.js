@@ -1,18 +1,17 @@
 const
     debug = require('debug')('hbauth:login'),
-    router = require('express').Router(),
     bcrypt = require('bcrypt'),
     knex = require('../db/knex'),
     _ = require('lodash');
 
-module.exports = () => {
+module.exports = (router, app) => {
 
-    login();
+    login(router, app);
     return router;
 
 };
 
-function login() {
+function login(router, app) {
 
     router.route('/login')
 

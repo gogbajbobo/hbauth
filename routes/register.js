@@ -1,19 +1,18 @@
 const
     debug = require('debug')('hbauth:register'),
-    router = require('express').Router(),
     bcrypt = require('bcrypt'),
     knex = require('../db/knex'),
     uuidv4 = require('uuid/v4'),
     _ = require('lodash');
 
-module.exports = () => {
+module.exports = (router, app) => {
 
-    register();
+    register(router, app);
     return router;
 
 };
 
-function register() {
+function register(router, app) {
 
     router.route('/register')
 
