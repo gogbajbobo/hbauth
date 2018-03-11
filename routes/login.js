@@ -16,18 +16,18 @@ function login(router, app, knex) {
 
         .all((req, res) => {
 
-            const login = req.body.login || req.query.login;
+            const username = req.body.username || req.query.username;
             const password = req.body.password || req.query.password;
 
-            debug('login user:', login, 'and password:', password);
+            debug('login user:', username, 'and password:', password);
 
-            if (!login || !password) {
+            if (!username || !password) {
                 return res.status(400).send();
             }
 
             const users = knex('users');
 
-            users.select('hash').where('login', login)
+            users.select('hash').where('username', username)
                 .then(result => {
 
                     const hash = _.first(_.flatMap(result, obj => _.values(obj)));
@@ -41,7 +41,7 @@ function login(router, app, knex) {
                     bcrypt.compare(password, hash, (err, success) => {
 
                         if (!err && success) {
-                            res.status(200).json({login, password, hash, message: 'login success'});
+                            res.status(200).json({username, password, hash, message: 'login success'});
                         } else {
                             res.status(401).json({error: true, message: 'login unauthorized'});
                         }

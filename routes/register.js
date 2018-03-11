@@ -17,23 +17,23 @@ function register(router, app, knex) {
 
         .all((req, res) => {
 
-            const login = req.body.login || req.query.login;
+            const username = req.body.username || req.query.username;
             const password = req.body.password || req.query.password;
 
-            debug('trying to register user with login:', login, 'and password:', password);
+            debug('trying to register user with login:', username, 'and password:', password);
 
-            if (!login || !password) {
+            if (!username || !password) {
                 return res.status(400).send();
             }
 
             const users = knex('users');
 
-            users.select('login')
+            users.select('username')
                 .then(result => {
 
-                    const logins = _.flatMap(result, obj => _.values(obj));
+                    const usernames = _.flatMap(result, obj => _.values(obj));
 
-                    if (_.includes(logins, login)) {
+                    if (_.includes(usernames, username)) {
                         return res.status(400).json({error: true, message: 'login already taken'});
                     }
 
@@ -41,13 +41,13 @@ function register(router, app, knex) {
 
                         if (!err) {
 
-                            debug('insert user', {login, hash, xid: uuidv4()});
+                            debug('insert user', {username, hash, xid: uuidv4()});
 
-                            users.insert({login, hash, xid: uuidv4()})
+                            users.insert({username, hash, xid: uuidv4()})
                                 .then(result => {
 
                                     if (result) {
-                                        res.status(200).json({login, password, hash});
+                                        res.status(200).json({username, password, hash});
                                     } else {
                                         res.status(500).send();
                                     }
