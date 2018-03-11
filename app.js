@@ -9,12 +9,13 @@ const
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-const register = require('./routes/register')(router, app, knex);
-const login = require('./routes/login')(router, app, knex);
+const
+    register = require('./routes/register')(router, app, knex),
+    login = require('./routes/login')(router, app, knex),
+    validator = require('./routes/check');
+
 app.use(register);
 app.use(login);
-
-const validator = require('./routes/check');
 app.use(validator);
 
 const port = 8887;
