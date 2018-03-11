@@ -3,7 +3,7 @@ const
     express = require('express'),
     app = express(),
     router = express.Router(),
-    knex = require('./db/knex'),
+    knex = require('./db/config/knex'),
     bodyParser = require('body-parser'),
     oauthserver = require('oauth2-server');
 
