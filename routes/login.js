@@ -2,7 +2,7 @@ const
     debug = require('debug')('hbauth:login'),
     router = require('express').Router(),
     bcrypt = require('bcrypt'),
-    users = require('../db/knex')('users'),
+    knex = require('../db/knex'),
     _ = require('lodash');
 
 module.exports = () => {
@@ -27,10 +27,14 @@ function login() {
                 return res.status(400).send();
             }
 
+            const users = knex('users');
+
             users.select('hash').where('login', login)
                 .then(result => {
 
                     const hash = _.first(_.flatMap(result, obj => _.values(obj)));
+
+                    debug(hash);
 
                     if (!hash) {
                         return res.status(401).json({error: true, message: 'login unauthorized'});
