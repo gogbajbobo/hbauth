@@ -2,7 +2,7 @@ const
     debug = require('debug')('hbauth:register'),
     router = require('express').Router(),
     bcrypt = require('bcrypt'),
-    users = require('../db/knex')('users'),
+    knex = require('../db/knex'),
     uuidv4 = require('uuid/v4'),
     _ = require('lodash');
 
@@ -28,6 +28,8 @@ function register() {
                 return res.status(400).send();
             }
 
+            const users = knex('users');
+
             users.select('login')
                 .then(result => {
 
@@ -40,6 +42,8 @@ function register() {
                     bcrypt.hash(password, 10, (err, hash) => {
 
                         if (!err) {
+
+                            debug('insert user', {login, hash, xid: uuidv4()});
 
                             users.insert({login, hash, xid: uuidv4()})
                                 .then(result => {
@@ -61,6 +65,9 @@ function register() {
 
                     });
 
+                })
+                .catch(() => {
+                    res.status(500).send();
                 });
 
         })
