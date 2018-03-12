@@ -4,7 +4,10 @@ const
     app = express(),
     router = express.Router(),
     knex = require('./db/config/knex'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    passport = require('passport'),
+    Strategy = require('passport-local').Strategy;
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
