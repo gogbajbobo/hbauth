@@ -29,6 +29,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use(require('express-session')({
+    name: 'hbauth.session.id',
     secret: 'mouse dog',
     resave: false,
     saveUninitialized: false
