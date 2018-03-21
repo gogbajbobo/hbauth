@@ -20,19 +20,23 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+// app.use(passport.authenticate('local', { failureRedirect: '/register' }),
+//     (req, res) => {
+//         res.redirect('/');
+//     }
+// );
+
 const
-    // register = require('./routes/register')(router, app, knex),
-    // login = require('./routes/login')(router, app, knex),
+    register = require('./routes/register')(router, app, knex),
+    login = require('./routes/login')(router, app, knex),
     validator = require('./routes/check');
 
-// app.use(register);
-// app.use(login);
-app.use('/login',
-    passport.authenticate('local', { failureRedirect: '/register' }),
-    (req, res) => {
-        res.redirect('/');
-    });
+app.use(register);
 
+app.use(passport.authenticate('local'));
+
+app.use(login);
 app.use(validator);
 
 const port = 8887;

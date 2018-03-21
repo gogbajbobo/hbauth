@@ -12,6 +12,8 @@ module.exports = (router, app, knex) => {
 
 function login(router, app, knex) {
 
+    debug('login user');
+
     router.route('/login')
 
         .all((req, res) => {
