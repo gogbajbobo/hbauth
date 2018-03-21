@@ -2,5 +2,9 @@
   "port" : 8887,
   "mongoose": {
     "uri": "mongodb://localhost/hbrest"
+  },
+  "api": {
+    "host": "http://localhost",
+    "port": 8888
   }
 }

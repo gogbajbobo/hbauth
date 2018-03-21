@@ -7,7 +7,8 @@ const
     log             = require('./log/logger')(module),
     config          = require('./config/config'),
     passport        = require('./auth/auth'),
-    path            = require('path');
+    path            = require('path'),
+    login = require('connect-ensure-login');
 
 mongoose.connect(config.get('mongoose:uri'));
 const db = mongoose.connection;
@@ -36,8 +37,11 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const authRoutes = require('./routes/routes');
-app.use(authRoutes);
+const routes = require('./routes/routes');
+app.use(routes);
+
+const apiRoute = require('./routes/apiRoute');
+app.use('/api', login.ensureLoggedIn(), apiRoute);
 
 const port = process.env.PORT || config.get('port');
 app.listen(port, () => {
