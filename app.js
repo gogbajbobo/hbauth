@@ -4,10 +4,28 @@ const
     app = express(),
     router = express.Router(),
     knex = require('./db/config/knex'),
-    bodyParser = require('body-parser');
+    usersDbHelper = require('./db/usersHelper')(knex),
+    bodyParser = require('body-parser'),
+    passport = require('passport'),
+    Strategy = require('passport-local').Strategy,
+    passportHelper = require('./auth/passport/passportHelper')(usersDbHelper);
+
+passport.use(new Strategy(passportHelper.passportLocalVerify));
+passport.serializeUser(passportHelper.serializeUser);
+passport.deserializeUser(passportHelper.deserializeUser);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+// app.use(passport.authenticate('local', { failureRedirect: '/register' }),
+//     (req, res) => {
+//         res.redirect('/');
+//     }
+// );
 
 const
     register = require('./routes/register')(router, app, knex),
@@ -15,6 +33,9 @@ const
     validator = require('./routes/check');
 
 app.use(register);
+
+app.use(passport.authenticate('local'));
+
 app.use(login);
 app.use(validator);
 
