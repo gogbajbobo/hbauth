@@ -1,13 +1,13 @@
 const
-    express         = require('express'),
-    app             = express(),
-    bodyParser      = require('body-parser'),
-    mongoose        = require('mongoose'),
-    requestLogger   = require('morgan'),
-    log             = require('./log/logger')(module),
-    config          = require('./config/config'),
-    passport        = require('./auth/auth'),
-    path            = require('path'),
+    express = require('express'),
+    app = express(),
+    bodyParser = require('body-parser'),
+    mongoose = require('mongoose'),
+    requestLogger = require('morgan'),
+    log = require('./log/logger')(module),
+    config = require('./config/config'),
+    passport = require('./auth/auth'),
+    path = require('path'),
     login = require('connect-ensure-login');
 
 mongoose.connect(config.get('mongoose:uri'));
