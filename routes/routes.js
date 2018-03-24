@@ -65,8 +65,6 @@ router.route('/logout')
 router.route('/userinfo')
     .all(login.ensureLoggedIn(), (req, res, next) => {
 
-        log.info(req.user);
-
         res.status(200).json({
             error: false,
             message: 'user info',
