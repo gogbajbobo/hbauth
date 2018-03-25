@@ -4,16 +4,12 @@ const
     log = require('../log/logger')(module),
     User = require('../db/models/User'),
     passport = require('../auth/auth'),
+    jwt = require('jsonwebtoken'),
     login = require('connect-ensure-login');
 
 router.route('/register')
     .get((req, res, next) => {
-
-        res.status(404).json({
-            error: true,
-            message: 'register page is not ready yet'
-        });
-
+        res.render('register');
     })
     .post((req, res, next) => {
 
@@ -49,10 +45,38 @@ router.route('/register')
 router.route('/login')
     .get((req, res, next) => {
         res.render('login');
-    })
-    .post(passport.authenticate('local', {failureRedirect: '/login'}), (req, res, next) => {
-        res.redirect('/userinfo');
     });
+    // .post(passport.authenticate('local', {failureRedirect: '/login'}), (req, res, next) => {
+    //     res.redirect('/userinfo');
+    // });
+
+router.post('/login', (req, res, next) => {
+
+    passport.authenticate('local', {session: false}, (err, user, info) => {
+
+        log.error(err);
+
+        if (err || !user) {
+            return res.status(400).json({
+                message: 'Something is not right',
+                user   : user
+            });
+        }
+
+        req.login(user, {session: false}, (err) => {
+
+            if (err) { res.send(err); }
+
+            // generate a signed son web token with the contents of user object and return it in the response
+            const token = jwt.sign(user, 'your_jwt_secret');
+            return res.json({user, token});
+
+        });
+
+    })(req, res);
+
+});
+
 
 router.route('/logout')
     .all((req, res, next) => {
