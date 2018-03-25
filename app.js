@@ -6,7 +6,7 @@ const
     requestLogger = require('morgan'),
     log = require('./log/logger')(module),
     config = require('./config/config'),
-    passport = require('./auth/auth'),
+    passport = require('./auth/passport'),
     path = require('path'),
     login = require('connect-ensure-login');
 

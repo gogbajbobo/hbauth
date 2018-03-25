@@ -3,7 +3,7 @@ const
     router = express.Router(),
     log = require('../log/logger')(module),
     User = require('../db/models/User'),
-    passport = require('../auth/auth'),
+    passport = require('../auth/passport'),
     jwt = require('jsonwebtoken'),
     login = require('connect-ensure-login');
 
