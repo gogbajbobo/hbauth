@@ -15,6 +15,8 @@ const opts = {
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
 
+    // first I have to check if jwt in my db (Redis or something)
+
     log.info(jwtPayload);
 
     const expirationDate = new Date(jwtPayload.exp * 1000);
