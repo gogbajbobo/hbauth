@@ -5,6 +5,7 @@ const
     User = require('../db/models/User'),
     passport = require('../auth/passport'),
     jwt = require('jsonwebtoken'),
+    config = require('../config/config'),
     login = require('connect-ensure-login');
 
 router.route('/register')
@@ -45,37 +46,76 @@ router.route('/register')
 router.route('/login')
     .get((req, res, next) => {
         res.render('login');
+    })
+    .post(passport.authenticate(['local', 'jwt']), (req, res, next) => {
+        res.redirect('/userinfo');
     });
-    // .post(passport.authenticate('local', {failureRedirect: '/login'}), (req, res, next) => {
-    //     res.redirect('/userinfo');
-    // });
 
-router.post('/login', (req, res, next) => {
+function showToken(req, res, next) {
 
-    passport.authenticate('local', {session: false}, (err, user, info) => {
+    log.info(req.headers.authorization);
+    jwt.verify(req.headers.authorization, config.get('jwt:secretKey'), (err, jwtPayload) => {
 
-        log.error(err);
+        log.error('error:', err);
+        log.info('jwtPayload:', jwtPayload);
 
-        if (err || !user) {
-            return res.status(400).json({
-                message: 'Something is not right',
-                user   : user
-            });
-        }
+        next();
 
-        req.login(user, {session: false}, (err) => {
+    });
 
-            if (err) { res.send(err); }
+}
 
-            // generate a signed son web token with the contents of user object and return it in the response
-            const token = jwt.sign(user, 'your_jwt_secret');
-            return res.json({user, token});
+router.route('/token')
+    .post(passport.authenticate('local'), (req, res, next) => {
 
-        });
+        const username = req.body.username;
+        const password = req.body.password;
+        const user = {
+            'username': username,
+            'role': 'admin'
+        };
+        console.log('login', user);
 
-    })(req, res);
+        const token = jwt.sign(user, config.get('jwt:secretKey'), { expiresIn: 3000 });
+        // const refreshToken = randtoken.uid(256);
+        // refreshTokens[refreshToken] = username;
 
-});
+        console.log('jwt', token);
+        // console.log('refreshToken', refreshToken);
+        // console.log('refreshTokens', refreshTokens);
+
+        // res.json({token: 'Bearer ' + token, refreshToken: refreshToken});
+
+        res.json({token: 'Bearer ' + token});
+
+    });
+
+// router.post('/login', (req, res, next) => {
+//
+//     passport.authenticate('local', {session: false}, (err, user, info) => {
+//
+//         log.error(err);
+//
+//         if (err || !user) {
+//             return res.status(400).json({
+//                 message: 'Something is not right',
+//                 user   : user
+//             });
+//         }
+//
+//         req.login(user, {session: false}, (err) => {
+//
+//             if (err) { res.send(err); }
+//
+//             // generate a signed son web token with the contents of user object and return it in the response
+//             const token = jwt.sign(user, 'your_jwt_secret');
+//             return res.json({user, token});
+//
+//         });
+//
+//     })(req, res);
+//
+// });
 
 
 router.route('/logout')

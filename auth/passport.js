@@ -1,12 +1,13 @@
 const
     passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy,
     JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt,
     User = require('../db/models/User'),
     log = require('../log/logger')(module),
     config = require('../config/config');
 
-passport.use(User.createStrategy()); // this is local strategy
+passport.use(User.createStrategy());
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -24,25 +25,17 @@ passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
         return done(null, false);
     }
 
-    done(null, jwtPayload);
+    User.findByUsername(jwtPayload.username, (err, user) => {
 
-    //
-    // User.findOne({id: jwtPayload.sub}, (err, user) => {
-    //
-    //     if (err) { return done(err, false); }
-    //
-    //     // return done(null, user || false);
-    //
-    //     // return done(null, user ? user : false);
-    //
-    //     if (user) {
-    //         return done(null, user);
-    //     } else {
-    //         return done(null, false);
-    //         // or you could create a new account
-    //     }
-    //
-    // });
+        return done(null, user || false);
+        //
+        // if (user) {
+        //     return done(null, user);
+        // } else {
+        //     return done(null, false);
+        // }
+
+    });
 
 }));
 
