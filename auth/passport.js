@@ -4,7 +4,7 @@ const
     JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
-passport.use(User.createStrategy()); // this is local strategy?
+passport.use(User.createStrategy()); // this is local strategy
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
