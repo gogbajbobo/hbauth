@@ -19,12 +19,12 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-// app.use(require('express-session')({
-//     name: 'hbauth.session.id',
-//     secret: 'mouse dog',
-//     resave: false,
-//     saveUninitialized: false
-// }));
+app.use(require('express-session')({
+    name: 'hbauth.session.id',
+    secret: 'mouse dog',
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());

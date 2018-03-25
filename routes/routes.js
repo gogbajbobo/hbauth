@@ -51,20 +51,6 @@ router.route('/login')
         res.redirect('/userinfo');
     });
 
-function showToken(req, res, next) {
-
-    log.info(req.headers.authorization);
-    jwt.verify(req.headers.authorization, config.get('jwt:secretKey'), (err, jwtPayload) => {
-
-        log.error('error:', err);
-        log.info('jwtPayload:', jwtPayload);
-
-        next();
-
-    });
-
-}
-
 router.route('/token')
     .post(passport.authenticate('local'), (req, res, next) => {
 
@@ -90,36 +76,8 @@ router.route('/token')
 
     });
 
-// router.post('/login', (req, res, next) => {
-//
-//     passport.authenticate('local', {session: false}, (err, user, info) => {
-//
-//         log.error(err);
-//
-//         if (err || !user) {
-//             return res.status(400).json({
-//                 message: 'Something is not right',
-//                 user   : user
-//             });
-//         }
-//
-//         req.login(user, {session: false}, (err) => {
-//
-//             if (err) { res.send(err); }
-//
-//             // generate a signed son web token with the contents of user object and return it in the response
-//             const token = jwt.sign(user, 'your_jwt_secret');
-//             return res.json({user, token});
-//
-//         });
-//
-//     })(req, res);
-//
-// });
-
-
 router.route('/logout')
-    .all((req, res, next) => {
+    .get((req, res, next) => {
 
         req.logout();
         res.redirect('/');
@@ -127,7 +85,7 @@ router.route('/logout')
     });
 
 router.route('/userinfo')
-    .all(login.ensureLoggedIn(), (req, res, next) => {
+    .get(login.ensureLoggedIn(), (req, res, next) => {
 
         res.status(200).json({
             error: false,
