@@ -1,10 +1,13 @@
 {
-  "port" : 8887,
-  "mongoose": {
-    "uri": "mongodb://localhost/hbrest"
-  },
-  "api": {
-    "host": "http://localhost",
-    "port": 8888
-  }
+    "port": 8887,
+    "mongoose": {
+        "uri": "mongodb://localhost/hbrest"
+    },
+    "api": {
+        "host": "http://localhost",
+        "port": 8888
+    },
+    "jwt": {
+        "secretKey": "This is super secret key which I have to hide somewhere"
+    }
 }

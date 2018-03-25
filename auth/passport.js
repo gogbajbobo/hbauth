@@ -1,36 +1,46 @@
 const
-    passport                = require('passport'),
-    User                    = require('../db/models/User'),
+    passport = require('passport'),
     JwtStrategy = require('passport-jwt').Strategy,
-    ExtractJwt = require('passport-jwt').ExtractJwt;
+    ExtractJwt = require('passport-jwt').ExtractJwt,
+    User = require('../db/models/User'),
+    log = require('../log/logger')(module),
+    config = require('../config/config');
 
 passport.use(User.createStrategy()); // this is local strategy
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'secret',
-    issuer: 'accounts.examplesoft.com',
-    audience: 'yoursite.net'
+    secretOrKey: config.get('jwt:secretKey')
 };
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
 
-    User.findOne({id: jwtPayload.sub}, (err, user) => {
+    log.info(jwtPayload);
 
-        if (err) { return done(err, false); }
+    const expirationDate = new Date(jwtPayload.exp * 1000);
+    if (expirationDate < new Date()) {
+        return done(null, false);
+    }
 
-        // return done(null, user || false);
+    done(null, jwtPayload);
 
-        // return done(null, user ? user : false);
-
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-            // or you could create a new account
-        }
-
-    });
+    //
+    // User.findOne({id: jwtPayload.sub}, (err, user) => {
+    //
+    //     if (err) { return done(err, false); }
+    //
+    //     // return done(null, user || false);
+    //
+    //     // return done(null, user ? user : false);
+    //
+    //     if (user) {
+    //         return done(null, user);
+    //     } else {
+    //         return done(null, false);
+    //         // or you could create a new account
+    //     }
+    //
+    // });
 
 }));
 
