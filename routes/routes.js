@@ -49,7 +49,11 @@ router.route('/login')
         res.render('login');
     })
     .post(passport.authenticate(['local', 'jwt']), (req, res, next) => {
-        res.redirect('/userinfo');
+
+        // res.setHeader('Access-Control-Allow-Origin', '*');
+        res.status(200).json({error: false, message: 'Ok!'});
+        // res.redirect('/userinfo');
+
     });
 
 router.route('/token')
