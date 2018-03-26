@@ -51,7 +51,11 @@ router.route('/login')
     .post(passport.authenticate(['local', 'jwt']), (req, res, next) => {
 
         // res.setHeader('Access-Control-Allow-Origin', '*');
-        res.status(200).json({error: false, message: 'Ok!'});
+        res.status(200).json({
+            error: false,
+            message: 'Login success',
+            user: req.user
+        });
         // res.redirect('/userinfo');
 
     });
