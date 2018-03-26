@@ -6,6 +6,7 @@ const
     passport = require('../auth/passport'),
     jwt = require('jsonwebtoken'),
     config = require('../config/config'),
+    requireRole = require('../auth/roles'),
     login = require('connect-ensure-login');
 
 router.route('/register')
@@ -82,6 +83,17 @@ router.route('/logout')
         req.logout();
         res.redirect('/');
 
+    });
+
+router.route('/secret')
+    .all(passport.authenticate(['local', 'jwt']), requireRole('admin'), (req, res, next) => {
+        res.status(200).json({
+            error: false,
+            message: 'OK!',
+            data: {
+                user: req.user
+            }
+        });
     });
 
 router.route('/userinfo')

@@ -18,23 +18,13 @@ passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
 
     // first I have to check if jwt in my db (Redis or something)
 
-    log.info(jwtPayload);
-
     const expirationDate = new Date(jwtPayload.exp * 1000);
     if (expirationDate < new Date()) {
         return done(null, false);
     }
 
     User.findByUsername(jwtPayload.username, (err, user) => {
-
         return done(null, user || false);
-        //
-        // if (user) {
-        //     return done(null, user);
-        // } else {
-        //     return done(null, false);
-        // }
-
     });
 
 }));

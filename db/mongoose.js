@@ -3,7 +3,6 @@ const
     log = require('../log/logger')(module),
     config = require('../config/config');
 
-
 mongoose.connect(config.get('mongoose:uri'));
 const db = mongoose.connection;
 
