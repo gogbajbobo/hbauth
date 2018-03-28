@@ -53,7 +53,7 @@ router.route('/login')
 
         const userData = {
             username: req.user.username,
-            userRole: req.user.role,
+            role: req.user.role,
             id: req.user._id
         };
 
