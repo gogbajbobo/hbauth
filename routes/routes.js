@@ -7,7 +7,8 @@ const
     jwt = require('jsonwebtoken'),
     config = require('../config/config'),
     requireRole = require('../auth/roles'),
-    login = require('connect-ensure-login');
+    login = require('connect-ensure-login'),
+    randtoken = require('rand-token');
 
 router.route('/register')
     .get((req, res, next) => {
@@ -50,13 +51,24 @@ router.route('/login')
     })
     .post(passport.authenticate(['local', 'jwt']), (req, res, next) => {
 
-        // res.setHeader('Access-Control-Allow-Origin', '*');
-        res.status(200).json({
+        const userData = {
+            username: req.user.username,
+            userRole: req.user.role,
+            id: req.user._id
+        };
+
+        const accessToken = jwt.sign(userData, config.get('jwt:secretKey'), { expiresIn: 3000 });
+        const refreshToken = randtoken.uid(256);
+
+        const responseData = {
             error: false,
             message: 'Login success',
-            user: req.user
-        });
-        // res.redirect('/userinfo');
+            user: userData,
+            accessToken,
+            refreshToken
+        };
+
+        res.status(200).json(responseData);
 
     });
 
